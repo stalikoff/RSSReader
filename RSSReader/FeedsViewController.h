@@ -7,7 +7,18 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <CoreData/CoreData.h>
+#import "ChannelEntity.h"
 
-@interface FeedsViewController : UIViewController
+
+@interface FeedsViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, NSFetchedResultsControllerDelegate>
+{    
+    __weak IBOutlet UITableView *newsTable;
+}
+
+@property (strong, nonatomic) ChannelEntity *detailItem;
+@property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
+@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+
 
 @end

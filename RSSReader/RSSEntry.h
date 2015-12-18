@@ -10,4 +10,12 @@
 
 @interface RSSEntry : NSObject
 
+@property NSString *blogTitle;
+@property NSString *articleTitle;
+@property NSString *articleUrl;
+@property NSDate *articleDate;
+
+
+- (id)initWithBlogTitle:(NSString*)blogTitle articleTitle:(NSString*)articleTitle articleUrl:(NSString*)articleUrl articleDate:(NSDate*)articleDate;
+
 @end

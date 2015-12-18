@@ -10,4 +10,16 @@
 
 @implementation RSSEntry
 
+- (id)initWithBlogTitle:(NSString*)blogTitle articleTitle:(NSString*)articleTitle articleUrl:(NSString*)articleUrl articleDate:(NSDate*)articleDate
+{
+    if ((self = [super init])) {
+        _blogTitle = blogTitle;
+        _articleTitle = articleTitle;
+        _articleUrl = articleUrl;
+        _articleDate = articleDate;
+    }
+    return self;
+}
+
+
 @end

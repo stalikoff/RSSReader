@@ -7,7 +7,18 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <CoreData/CoreData.h>
+#import "MediaRSSParser.h"
 
-@interface MainViewController : UIViewController
+@interface MainViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, NSFetchedResultsControllerDelegate>
+{
+    __weak IBOutlet UIButton *addFeedBtn;
+    __weak IBOutlet UITextField *feedUrlTF;
+    __weak IBOutlet UITableView *channelsTable;
+}
+
+@property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
+@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+@property (nonatomic) RSSParser *parser;
 
 @end
