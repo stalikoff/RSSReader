@@ -15,6 +15,8 @@
     __weak IBOutlet UIButton *addFeedBtn;
     __weak IBOutlet UITextField *feedUrlTF;
     __weak IBOutlet UITableView *channelsTable;
+    UIRefreshControl *refreshControl;
+    int notRefrChannelsCnt;
 }
 
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;

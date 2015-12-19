@@ -25,13 +25,15 @@
 
     AppDelegate *delegate = [[UIApplication sharedApplication] delegate];
     self.managedObjectContext = delegate.managedObjectContext;
+
+    refreshControl = [UIRefreshControl new];
+    [channelsTable addSubview:refreshControl];
+    [refreshControl addTarget:self action:@selector(refreshData) forControlEvents:UIControlEventValueChanged];
     
-    
-    NSTimer *t = [NSTimer scheduledTimerWithTimeInterval: 1.0
+    NSTimer *t = [NSTimer scheduledTimerWithTimeInterval: 30.0
                                                   target: self
                                                 selector:@selector(updateAllNews)
                                                 userInfo: nil repeats:YES];
-    
 }
 
 - (IBAction)addChannelPress:(id)sender
@@ -90,19 +92,22 @@
     ChannelEntity *newChannel = [self getSavedChannelFromUrl:feedUrl];
     
     if (newChannel) { // if is in db
-        if ([newChannel.lastUpdateDate compare:channel.lastBuildDate] == NSOrderedSame) { // is update
-            // if no updates
-            NSLog(@"new date: %@  saved date: %@", newChannel.lastUpdateDate, channel.lastBuildDate);
-            
-            return;
+        if (newChannel.lastUpdateDate) {
+            if ([newChannel.lastUpdateDate compare:channel.lastBuildDate] == NSOrderedSame) { // is update
+                // if no updates
+                NSLog(@"new date: %@  saved date: %@", newChannel.lastUpdateDate, channel.lastBuildDate);
+                
+                return;
+            }
         }
     
         NSLog(@"new date: %@  saved date: %@", newChannel.lastUpdateDate, channel.lastBuildDate);
         
         newChannel.lastUpdateDate = channel.lastBuildDate;
-        isNewChannel = NO;
+//        isNewChannel = NO;
     }
     else{ // new
+        isNewChannel = YES;
         newChannel = [NSEntityDescription insertNewObjectForEntityForName:[entity name] inManagedObjectContext:context];
         newChannel.title = channel.title;
         newChannel.url = feedUrl;
@@ -131,6 +136,8 @@
             if ([self isNewsDatabase:item.guid]) { // is in db
                 continue;
             }
+            
+            newChannel.unreadCount = [NSNumber numberWithInt: newChannel.unreadCount.intValue + 1];
             
             ItemEntity *itemEnt = [NSEntityDescription insertNewObjectForEntityForName:@"ItemEntity" inManagedObjectContext:context];
             itemEnt.title = item.title;
@@ -241,7 +248,7 @@
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"ChannelEntity" inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
     
-    NSSortDescriptor *dateSD = [NSSortDescriptor sortDescriptorWithKey:@"addedDate" ascending:YES];
+    NSSortDescriptor *dateSD = [NSSortDescriptor sortDescriptorWithKey:@"addedDate" ascending:NO];
 
     [fetchRequest setSortDescriptors:@[dateSD]];
     
@@ -326,13 +333,6 @@
     }
 }
 
-// TODO: need to check
-
--(void)viewWillDisappear:(BOOL)animated
-{
-    [NSFetchedResultsController deleteCacheWithName:nil];
-}
-
 #pragma mark request 
 -(void)getChannel:(NSString*)url
 {
@@ -344,16 +344,18 @@
                    parameters:parameters
                       success:^(RSSChannel *channel) {
                           [self saveToCoreData:channel andUrl:feedURLString];
+                          [self decreaseNotRefrChannels];
                       }
                       failure:^(NSError *error) {
+                          [self decreaseNotRefrChannels];
                           NSLog(@"An error occurred: %@", error);
                       }];
 }
 
 - (void)updateAllNews
 {
+    NSError *error;
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"ChannelEntity"];
-    NSError *error = nil;
     NSArray *results = [self.managedObjectContext executeFetchRequest:request error:&error];
 
     for (ChannelEntity *channel in results) {
@@ -362,6 +364,14 @@
 }
 
 #pragma mark is in db
+
+-(int)savedChannelsCnt
+{
+    NSError *error;
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"ChannelEntity"];
+    NSUInteger count = [self.managedObjectContext countForFetchRequest:request error:&error];
+    return count;
+}
 
 -(BOOL)isUrlInDatabase:(NSString *)feedUrl
 {
@@ -383,11 +393,10 @@
 -(BOOL)isNewsDatabase:(NSString *)newsGuid
 {
     NSError *error;
-    NSManagedObjectContext *context = self.managedObjectContext;
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"ItemEntity"];
     [request setPredicate:[NSPredicate predicateWithFormat:@"guid = %@", newsGuid]];
     [request setFetchLimit:1];
-    NSUInteger count = [context countForFetchRequest:request error:&error];
+    NSUInteger count = [self.managedObjectContext countForFetchRequest:request error:&error];
     
     if (count == 0){
         return NO;
@@ -413,6 +422,42 @@
         return nil;
     }
 }
+
+-(void)decreaseNotRefrChannels
+{
+    if (notRefrChannelsCnt) {
+        if (notRefrChannelsCnt == 1) {
+            notRefrChannelsCnt = 0;
+            if (refreshControl.refreshing) {
+                [refreshControl endRefreshing];
+            }
+            return;
+        }
+        notRefrChannelsCnt --;
+    }
+}
+
+-(void)refreshData
+{
+    int channelsCnt = [self savedChannelsCnt];
+    if (! channelsCnt) {
+        [refreshControl endRefreshing];
+        return;
+    }
+
+    notRefrChannelsCnt = channelsCnt;
+    [self updateAllNews];
+}
+
+-(void)viewWillDisappear:(BOOL)animated
+{
+    notRefrChannelsCnt = 0;
+    if (refreshControl.refreshing) {
+        [refreshControl endRefreshing];
+    }
+    [NSFetchedResultsController deleteCacheWithName:nil];
+}
+
 
 
 @end

@@ -14,6 +14,7 @@
 @interface FeedsViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, NSFetchedResultsControllerDelegate>
 {    
     __weak IBOutlet UITableView *newsTable;
+    UIRefreshControl *refreshControl;
 }
 
 @property (strong, nonatomic) ChannelEntity *detailItem;

@@ -24,6 +24,10 @@
 
     AppDelegate *delegate = [[UIApplication sharedApplication] delegate];
     self.managedObjectContext = delegate.managedObjectContext;
+    
+    refreshControl = [UIRefreshControl new];
+    [newsTable addSubview:refreshControl];
+    [refreshControl addTarget:self action:@selector(refreshData) forControlEvents:UIControlEventValueChanged];
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -213,5 +217,17 @@
         controller.navigationItem.leftItemsSupplementBackButton = YES;
     }
 }
+
+-(void)refreshData
+{
+    [refreshControl endRefreshing];
+}
+
+-(void)viewWillDisappear:(BOOL)animated
+{
+    [refreshControl endRefreshing];
+}
+
+
 
 @end
