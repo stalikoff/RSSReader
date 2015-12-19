@@ -37,6 +37,9 @@
         return;
     }
     
+    
+    UIAlertController *contr;
+    
     if (![self isValidFeedUrl]) {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Feed url is not valid!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
         [alert show];
@@ -75,25 +78,6 @@
         return YES;
     }
 }
-
--(void)getChannel:(NSString*)url
-{
-    RSSParser *parser = [[RSSParser alloc] init];
-    self.parser = parser;
-    NSString *feedURLString = url;
-//    NSDictionary *parameters = @{@"...": @"..."};
-    NSDictionary *parameters = nil;
-    [self.parser parseRSSFeed:feedURLString
-                   parameters:parameters
-                      success:^(RSSChannel *channel) {
-//                          NSLog(@"url: %@", feedURLString);
-                          [self saveToCoreData:channel andUrl:feedURLString];
-                      }
-                      failure:^(NSError *error) {
-                          NSLog(@"An error occurred: %@", error);
-                      }];
-}
-
 
 -(void)saveToCoreData:(RSSChannel*)channel andUrl:(NSString*)feedUrl
 {
@@ -159,16 +143,10 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1
                                        reuseIdentifier:CellIdentifier];
     }
+
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    
     [self configureCell:cell atIndexPath:indexPath];
-//    ChannelEntity *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
-//    cell.textLabel.text = object.title;
-//
-//    if (object.unreadCount.integerValue > 0) {
-//        cell.detailTextLabel.text = object.unreadCount.stringValue;
-//    }
-    
+
     return cell;
 }
 
@@ -302,6 +280,52 @@
         [controller setDetailItem:object];
         controller.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
         controller.navigationItem.leftItemsSupplementBackButton = YES;
+    }
+}
+
+// TODO: need to check
+
+-(void)viewWillDisappear:(BOOL)animated
+{
+    [NSFetchedResultsController deleteCacheWithName:nil];
+}
+
+#pragma mark request 
+-(void)getChannel:(NSString*)url
+{
+    RSSParser *parser = [[RSSParser alloc] init];
+    self.parser = parser;
+    NSString *feedURLString = url;
+    NSDictionary *parameters = nil;
+    [self.parser parseRSSFeed:feedURLString
+                   parameters:parameters
+                      success:^(RSSChannel *channel) {
+                          [self saveToCoreData:channel andUrl:feedURLString];
+                      }
+                      failure:^(NSError *error) {
+                          NSLog(@"An error occurred: %@", error);
+                      }];
+}
+
+- (void)updateAllNews
+{
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"ChannelEntity"];
+    NSError *error = nil;
+    NSArray *results = [self.managedObjectContext executeFetchRequest:request error:&error];
+
+    for (ChannelEntity *channel in results) {
+        [self getChannel:channel.url];
+    }
+}
+
+- (void)getChannelFromUrl:(NSString*)url
+{
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"ChannelEntity"];
+    NSError *error = nil;
+    NSArray *results = [self.managedObjectContext executeFetchRequest:request error:&error];
+    
+    for (ChannelEntity *channel in results) {
+        [self getChannel:channel.url];
     }
 }
 

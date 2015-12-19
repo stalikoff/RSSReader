@@ -64,7 +64,9 @@
                             <constraint firstItem="CJf-Y2-Bxa" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="topMargin" constant="55" id="hRd-LB-sp5"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Home" id="oBK-Qu-bbV"/>
+                    <navigationItem key="navigationItem" title="Home" id="oBK-Qu-bbV">
+                        <barButtonItem key="backBarButtonItem" title="Back" id="Xga-y1-Qvm"/>
+                    </navigationItem>
                     <connections>
                         <outlet property="addFeedBtn" destination="CJf-Y2-Bxa" id="Utt-aU-X6L"/>
                         <outlet property="channelsTable" destination="iAX-Vo-i2L" id="2E6-DW-0fd"/>
@@ -108,7 +110,7 @@
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mUq-8b-YpM">
                                                     <rect key="frame" x="8" y="37" width="554" height="31"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
@@ -133,14 +135,51 @@
                             <constraint firstAttribute="trailing" secondItem="AYr-mH-e8A" secondAttribute="trailing" id="Nho-sA-hvI"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="News" id="kFS-TO-P8K"/>
+                    <navigationItem key="navigationItem" title="News" id="kFS-TO-P8K">
+                        <barButtonItem key="backBarButtonItem" title="Back" id="R2q-R0-aMb"/>
+                    </navigationItem>
                     <connections>
                         <outlet property="newsTable" destination="AYr-mH-e8A" id="Oa5-aR-ozP"/>
+                        <segue destination="2ku-fz-HCu" kind="show" identifier="showDetailSegue" id="LvV-VQ-maj"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dS2-4g-ZUH" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1786" y="295"/>
+        </scene>
+        <!--News web-->
+        <scene sceneID="DKA-7e-Dcl">
+            <objects>
+                <viewController storyboardIdentifier="NewsDetailController" id="2ku-fz-HCu" customClass="NewsDetailController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Eh7-0f-hDF"/>
+                        <viewControllerLayoutGuide type="bottom" id="kT5-aA-0Uf"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="BhT-qd-L7l">
+                        <rect key="frame" x="0.0" y="64" width="600" height="536"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WJf-Br-ElD">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="536"/>
+                                <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="deviceRGB"/>
+                            </webView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="WJf-Br-ElD" firstAttribute="leading" secondItem="BhT-qd-L7l" secondAttribute="leading" id="eM8-m8-0SI"/>
+                            <constraint firstAttribute="trailing" secondItem="WJf-Br-ElD" secondAttribute="trailing" id="fa3-V8-7wN"/>
+                            <constraint firstAttribute="topMargin" secondItem="WJf-Br-ElD" secondAttribute="top" id="i2T-va-mBH"/>
+                            <constraint firstAttribute="bottomMargin" secondItem="WJf-Br-ElD" secondAttribute="bottom" id="vbu-6B-xnL"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="News web" id="6JK-pB-zfk"/>
+                    <connections>
+                        <outlet property="newsWebView" destination="WJf-Br-ElD" id="EK1-LE-zjM"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="RUJ-XL-bYN" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2487" y="295"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="aL3-FX-siR">

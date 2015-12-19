@@ -6,7 +6,6 @@
 target 'RSSReader' do
 
 pod 'MediaRSSParser', '~> 1.0'
-pod 'MagicalRecord', '~> 2.3'
 
 end
 

@@ -10,6 +10,8 @@
 #import "AppDelegate.h"
 #import "ItemEntity.h"
 #import "NewsItemCell.h"
+#import "NewsDetailController.h"
+#import "UIColor+RSSReader.h"
 
 @interface FeedsViewController ()
 
@@ -22,9 +24,14 @@
 
     AppDelegate *delegate = [[UIApplication sharedApplication] delegate];
     self.managedObjectContext = delegate.managedObjectContext;
-    
 }
 
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    self.navigationItem.title = self.detailItem.title;
+}
 
 #pragma mark TableView
 
@@ -64,19 +71,20 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // show webview
+    [self performSegueWithIdentifier:@"showDetailSegue" sender:nil];
     
-//    [self performSegueWithIdentifier:@"showFeedSegue" sender:nil];
-
-    
-    self.detailItem.unreadCount = [NSNumber numberWithInt:self.detailItem.unreadCount.intValue - 1];
-
-    NSManagedObjectContext *context = self.managedObjectContext;
-    
-    NSError *error = nil;
-    if (![context save:&error]) {
-        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-        abort();
+    ItemEntity *object = [[self fetchedResultsController] objectAtIndexPath:indexPath];
+    // decrement viewscount
+    if (object.isNew) {
+        object.isNew = NO;
+        
+        self.detailItem.unreadCount = [NSNumber numberWithInt:self.detailItem.unreadCount.intValue - 1];
+        NSManagedObjectContext *context = self.managedObjectContext;
+        NSError *error = nil;
+        if (![context save:&error]) {
+            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+            abort();
+        }
     }
 }
 
@@ -86,17 +94,26 @@
     cell.titleLabel.text = object.title;
     
     NSDate *publDate = object.pubDate;
+    
+    if (object.isNew) {
+        cell.titleLabel.textColor = [UIColor unreadTitleColor];
+        cell.dateLabel.textColor = [UIColor unreadDateColor];
+    }
+    else{
+        cell.titleLabel.textColor = [UIColor readColor];
+        cell.dateLabel.textColor = [UIColor readColor];
+    }
 
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-//    [formatter setDateFormat: @"yyyy-MM-dd HH:mm:ss zzz"];
-
     [formatter setDateFormat: @"dd.MM.yy, HH:mm"];
-
-    
     NSString *stringFromDate = [formatter stringFromDate:publDate];
+
     cell.dateLabel.text =  stringFromDate;
 }
 
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    return NO;
+}
 
 #pragma mark - Fetched results controller
 
@@ -187,6 +204,14 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
+    if ([[segue identifier] isEqualToString:@"showDetailSegue"]) {
+        NSIndexPath *indexPath = [newsTable indexPathForSelectedRow];
+        ItemEntity *object = [[self fetchedResultsController] objectAtIndexPath:indexPath];
+        NewsDetailController *controller = (NewsDetailController *)segue.destinationViewController;
+        controller.newsUrl = object.link;
+        controller.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
+        controller.navigationItem.leftItemsSupplementBackButton = YES;
+    }
 }
 
 @end
