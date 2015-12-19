@@ -25,8 +25,15 @@
 
     AppDelegate *delegate = [[UIApplication sharedApplication] delegate];
     self.managedObjectContext = delegate.managedObjectContext;
-
+    
+    
+    NSTimer *t = [NSTimer scheduledTimerWithTimeInterval: 1.0
+                                                  target: self
+                                                selector:@selector(updateAllNews)
+                                                userInfo: nil repeats:YES];
+    
 }
+
 - (IBAction)addChannelPress:(id)sender
 {
 //    NSString *feedURLString = @"http://feeds.feedburner.com/RayWenderlich";
@@ -81,12 +88,18 @@
     NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
     
     ChannelEntity *newChannel = [self getSavedChannelFromUrl:feedUrl];
+    
     if (newChannel) { // if is in db
-        if ([newChannel.lastUpdateDate compare:channel.lastBuildDate] == NSOrderedDescending) { // is update
+        if ([newChannel.lastUpdateDate compare:channel.lastBuildDate] == NSOrderedSame) { // is update
             // if no updates
+            NSLog(@"new date: %@  saved date: %@", newChannel.lastUpdateDate, channel.lastBuildDate);
+            
             return;
         }
-        newChannel.lastUpdateDate = [NSDate date];
+    
+        NSLog(@"new date: %@  saved date: %@", newChannel.lastUpdateDate, channel.lastBuildDate);
+        
+        newChannel.lastUpdateDate = channel.lastBuildDate;
         isNewChannel = NO;
     }
     else{ // new
@@ -94,7 +107,7 @@
         newChannel.title = channel.title;
         newChannel.url = feedUrl;
         newChannel.addedDate = [NSDate date];
-        newChannel.lastUpdateDate = [NSDate date];
+        newChannel.lastUpdateDate = channel.lastBuildDate;
         newChannel.unreadCount = [NSNumber numberWithInt:channel.items.count];
     }
     
