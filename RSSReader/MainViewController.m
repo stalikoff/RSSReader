@@ -37,19 +37,30 @@
         return;
     }
     
-    
-    UIAlertController *contr;
-    
     if (![self isValidFeedUrl]) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Feed url is not valid!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
-        [alert show];
+
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Error"
+                                                                                 message:@"Feed url is not valid!"
+                                                                          preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *actionOk = [UIAlertAction actionWithTitle:@"Ok"
+                                                           style:UIAlertActionStyleDefault
+                                                         handler:nil];
+        [alertController addAction:actionOk];
+        [self presentViewController:alertController animated:YES completion:nil];
+
         return;
     }
     
-    // check
     if ([self isUrlInDatabase:feedURLString]) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"This feed url is already addeed!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
-        [alert show];
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Error"
+                                                                                 message:@"This feed url is already addeed!"
+                                                                          preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *actionOk = [UIAlertAction actionWithTitle:@"Ok"
+                                                           style:UIAlertActionStyleDefault
+                                                         handler:nil];
+        [alertController addAction:actionOk];
+        [self presentViewController:alertController animated:YES completion:nil];
+        
         return;
     }
     
@@ -62,48 +73,67 @@
     return YES;
 }
 
--(BOOL)isUrlInDatabase:(NSString *)feedUrl
-{
-    NSError *error;
-    NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"ChannelEntity"];
-    [request setPredicate:[NSPredicate predicateWithFormat:@"url = %@", feedUrl]];
-    [request setFetchLimit:1];
-    NSUInteger count = [context countForFetchRequest:request error:&error];
-
-    if (count == 0){
-        return NO;
-    }
-    else{
-        return YES;
-    }
-}
-
 -(void)saveToCoreData:(RSSChannel*)channel andUrl:(NSString*)feedUrl
 {
+    BOOL isNewChannel = NO;
+    
     NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
     NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
-    ChannelEntity *newChannel = [NSEntityDescription insertNewObjectForEntityForName:[entity name] inManagedObjectContext:context];
-    newChannel.title = channel.title;
-    newChannel.url = feedUrl;
-    newChannel.addedDate = [NSDate date];
-    newChannel.lastUpdateDate = [NSDate date];
-    newChannel.unreadCount = [NSNumber numberWithInt:channel.items.count];
+    
+    ChannelEntity *newChannel = [self getSavedChannelFromUrl:feedUrl];
+    if (newChannel) { // if is in db
+        if ([newChannel.lastUpdateDate compare:channel.lastBuildDate] == NSOrderedDescending) { // is update
+            // if no updates
+            return;
+        }
+        newChannel.lastUpdateDate = [NSDate date];
+        isNewChannel = NO;
+    }
+    else{ // new
+        newChannel = [NSEntityDescription insertNewObjectForEntityForName:[entity name] inManagedObjectContext:context];
+        newChannel.title = channel.title;
+        newChannel.url = feedUrl;
+        newChannel.addedDate = [NSDate date];
+        newChannel.lastUpdateDate = [NSDate date];
+        newChannel.unreadCount = [NSNumber numberWithInt:channel.items.count];
+    }
+    
+    // ------- items -------
     
     NSMutableSet *itemsSet = [NSMutableSet new];
     
-    for (RSSItem *item in channel.items) {
-        ItemEntity *itemEnt = [NSEntityDescription insertNewObjectForEntityForName:@"ItemEntity" inManagedObjectContext:context];
-        itemEnt.title = item.title;
-        itemEnt.pubDate = item.pubDate;
-        itemEnt.link = item.link.absoluteString;
-        itemEnt.guid = item.guid;
-        itemEnt.isNew = @YES;
-        [itemsSet addObject:itemEnt];
+    if (isNewChannel) {
+        for (RSSItem *item in channel.items) {
+            ItemEntity *itemEnt = [NSEntityDescription insertNewObjectForEntityForName:@"ItemEntity" inManagedObjectContext:context];
+            itemEnt.title = item.title;
+            itemEnt.pubDate = item.pubDate;
+            itemEnt.link = item.link.absoluteString;
+            itemEnt.guid = item.guid;
+            itemEnt.isNew = @YES;
+            [itemsSet addObject:itemEnt];
+        }
+    }
+    else{
+        for (RSSItem *item in channel.items) {
+            if ([self isNewsDatabase:item.guid]) { // is in db
+                continue;
+            }
+            
+            ItemEntity *itemEnt = [NSEntityDescription insertNewObjectForEntityForName:@"ItemEntity" inManagedObjectContext:context];
+            itemEnt.title = item.title;
+            itemEnt.pubDate = item.pubDate;
+            itemEnt.link = item.link.absoluteString;
+            itemEnt.guid = item.guid;
+            itemEnt.isNew = @YES;
+            [itemsSet addObject:itemEnt];
+        }
     }
     
-    [newChannel addItems:itemsSet];
-
+    if (itemsSet.count) {
+        [newChannel addItems:itemsSet];
+    }
+    
+    
     //    newChannel.newCount = [NSNumber numberWithInt:channel.items.count];
 //    for (RSSItem *item in channel.items) {
 //        ItemEntity *itemEnt = [NSEntityDescription insertNewObjectForEntityForName:@"ItemEntity" inManagedObjectContext:context];
@@ -318,14 +348,56 @@
     }
 }
 
-- (void)getChannelFromUrl:(NSString*)url
+#pragma mark is in db
+
+-(BOOL)isUrlInDatabase:(NSString *)feedUrl
+{
+    NSError *error;
+    NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"ChannelEntity"];
+    [request setPredicate:[NSPredicate predicateWithFormat:@"url = %@", feedUrl]];
+    [request setFetchLimit:1];
+    NSUInteger count = [context countForFetchRequest:request error:&error];
+    
+    if (count == 0){
+        return NO;
+    }
+    else{
+        return YES;
+    }
+}
+
+-(BOOL)isNewsDatabase:(NSString *)newsGuid
+{
+    NSError *error;
+    NSManagedObjectContext *context = self.managedObjectContext;
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"ItemEntity"];
+    [request setPredicate:[NSPredicate predicateWithFormat:@"guid = %@", newsGuid]];
+    [request setFetchLimit:1];
+    NSUInteger count = [context countForFetchRequest:request error:&error];
+    
+    if (count == 0){
+        return NO;
+    }
+    else{
+        return YES;
+    }
+}
+
+- (ChannelEntity *)getSavedChannelFromUrl:(NSString*)url
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"ChannelEntity"];
+    [request setPredicate:[NSPredicate predicateWithFormat:@"url = %@", url]];
+    [request setFetchLimit:1];
     NSError *error = nil;
     NSArray *results = [self.managedObjectContext executeFetchRequest:request error:&error];
-    
-    for (ChannelEntity *channel in results) {
-        [self getChannel:channel.url];
+
+    if (results.count) {
+        return results.firstObject;
+    }
+    else
+    {
+        return nil;
     }
 }
 
