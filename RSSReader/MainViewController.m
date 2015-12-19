@@ -102,9 +102,7 @@
         }
     
         NSLog(@"new date: %@  saved date: %@", newChannel.lastUpdateDate, channel.lastBuildDate);
-        
         newChannel.lastUpdateDate = channel.lastBuildDate;
-//        isNewChannel = NO;
     }
     else{ // new
         isNewChannel = YES;
@@ -152,18 +150,6 @@
     if (itemsSet.count) {
         [newChannel addItems:itemsSet];
     }
-    
-    
-    //    newChannel.newCount = [NSNumber numberWithInt:channel.items.count];
-//    for (RSSItem *item in channel.items) {
-//        ItemEntity *itemEnt = [NSEntityDescription insertNewObjectForEntityForName:@"ItemEntity" inManagedObjectContext:context];
-//        itemEnt.title = item.title;
-//        itemEnt.pubDate = item.pubDate;
-//        itemEnt.link = item.link.absoluteString;
-//        NSLog(@"link: %@", item.link.absoluteString);
-//        
-//        [newChannel addItemsObject:itemEnt];
-//    }
     
     NSError *error = nil;
     if (![context save:&error]) {
