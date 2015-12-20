@@ -77,6 +77,7 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [self performSegueWithIdentifier:@"showDetailSegue" sender:nil];
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     ItemEntity *object = [[self fetchedResultsController] objectAtIndexPath:indexPath];
     // decrement viewscount
