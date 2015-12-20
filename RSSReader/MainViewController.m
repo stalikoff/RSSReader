@@ -46,7 +46,7 @@
         return;
     }
     
-    if (![self isValidFeedUrl]) {
+    if (![self isValidFeedUrl:feedURLString]) {
 
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Error"
                                                                                  message:@"Feed url is not valid!"
@@ -77,9 +77,13 @@
     [self getChannel:feedURLString andFromAdd:YES];
 }
 
--(BOOL)isValidFeedUrl
+-(BOOL)isValidFeedUrl:(NSString *)urlString
 {
-    return YES;
+    NSURL *candidateURL = [NSURL URLWithString:urlString];
+    if (candidateURL && candidateURL.scheme && candidateURL.host) {
+        return YES;
+    }
+    return NO;
 }
 
 -(void)saveToCoreData:(RSSChannel*)channel andUrl:(NSString*)feedUrl
@@ -96,7 +100,6 @@
             if ([newChannel.lastUpdateDate compare:channel.lastBuildDate] == NSOrderedSame) { // is update
                 // if no updates
                 NSLog(@"new date: %@  saved date: %@", newChannel.lastUpdateDate, channel.lastBuildDate);
-                
                 return;
             }
         }
@@ -115,7 +118,6 @@
     }
     
     // ------- items -------
-    
     NSMutableSet *itemsSet = [NSMutableSet new];
     
     if (isNewChannel) {
@@ -294,8 +296,6 @@
             break;
             
         case NSFetchedResultsChangeMove:
-//            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-//            [tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
             break;
     }
 }
@@ -304,7 +304,6 @@
 {
     [channelsTable endUpdates];
 }
-
 
 #pragma mark Navigation
 
@@ -375,7 +374,7 @@
     [self getChannel:url andFromAdd:NO];
 }
 
-#pragma mark is in db
+#pragma mark database
 
 -(int)savedChannelsCnt
 {
