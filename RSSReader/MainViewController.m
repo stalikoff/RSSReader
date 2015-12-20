@@ -73,8 +73,8 @@
         return;
     }
     
-    [self getChannel:feedURLString];
     
+    [self getChannel:feedURLString andFromAdd:YES];
 }
 
 -(BOOL)isValidFeedUrl
@@ -321,8 +321,15 @@
 }
 
 #pragma mark request 
--(void)getChannel:(NSString*)url
+
+-(void)getChannel:(NSString*)url andFromAdd:(BOOL)isFromAdd
 {
+    if (isFromAdd) {
+        feedUrlTF.text = @"";
+        feedUrlTF.enabled = NO;
+        addFeedBtn.enabled = NO;
+    }
+    
     RSSParser *parser = [[RSSParser alloc] init];
     self.parser = parser;
     NSString *feedURLString = url;
@@ -332,9 +339,20 @@
                       success:^(RSSChannel *channel) {
                           [self saveToCoreData:channel andUrl:feedURLString];
                           [self decreaseNotRefrChannels];
+                          
+                          if (isFromAdd) {
+                              addFeedBtn.enabled = YES;
+                              feedUrlTF.enabled = YES;
+                          }
                       }
                       failure:^(NSError *error) {
                           [self decreaseNotRefrChannels];
+
+                          if (isFromAdd) {
+                              addFeedBtn.enabled = YES;
+                              feedUrlTF.enabled = YES;
+                          }
+                          
                           NSLog(@"An error occurred: %@", error);
                       }];
 }
@@ -346,14 +364,14 @@
     NSArray *results = [self.managedObjectContext executeFetchRequest:request error:&error];
 
     for (ChannelEntity *channel in results) {
-        [self getChannel:channel.url];
+        [self getChannel:channel.url andFromAdd:NO];
     }
 }
 
 -(void)refreshChannelFromParent:(NSString *)url
 {
     notRefrChannelsCnt ++;
-    [self getChannel:url];
+    [self getChannel:url andFromAdd:NO];
 }
 
 #pragma mark is in db
