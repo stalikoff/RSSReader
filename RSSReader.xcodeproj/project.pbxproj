@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		445926FE9D6814D181988D6A /* libPods-RSSReader.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BA66CA9897187A89DD3351EE /* libPods-RSSReader.a */; };
 		6114BE8A1C259104001BDB66 /* NewsDetailController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6114BE891C259104001BDB66 /* NewsDetailController.m */; };
-		6114BE8E1C25B65C001BDB66 /* AppConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 6114BE8D1C25B65C001BDB66 /* AppConstants.m */; };
 		6114BE911C25B849001BDB66 /* UIColor+RSSReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 6114BE901C25B849001BDB66 /* UIColor+RSSReader.m */; };
 		61AD3C5C1C1F6B630005FE3C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 61AD3C5B1C1F6B630005FE3C /* main.m */; };
 		61AD3C5F1C1F6B630005FE3C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 61AD3C5E1C1F6B630005FE3C /* AppDelegate.m */; };
@@ -29,8 +28,6 @@
 /* Begin PBXFileReference section */
 		6114BE881C259104001BDB66 /* NewsDetailController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewsDetailController.h; sourceTree = "<group>"; };
 		6114BE891C259104001BDB66 /* NewsDetailController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewsDetailController.m; sourceTree = "<group>"; };
-		6114BE8C1C25B65C001BDB66 /* AppConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppConstants.h; sourceTree = "<group>"; };
-		6114BE8D1C25B65C001BDB66 /* AppConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppConstants.m; sourceTree = "<group>"; };
 		6114BE8F1C25B849001BDB66 /* UIColor+RSSReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+RSSReader.h"; sourceTree = "<group>"; };
 		6114BE901C25B849001BDB66 /* UIColor+RSSReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+RSSReader.m"; sourceTree = "<group>"; };
 		61AD3C571C1F6B630005FE3C /* RSSReader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RSSReader.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -126,8 +123,6 @@
 				61F9C67A1C21B741003E0E3A /* NewsController.m */,
 				6114BE881C259104001BDB66 /* NewsDetailController.h */,
 				6114BE891C259104001BDB66 /* NewsDetailController.m */,
-				6114BE8C1C25B65C001BDB66 /* AppConstants.h */,
-				6114BE8D1C25B65C001BDB66 /* AppConstants.m */,
 				6114BE8F1C25B849001BDB66 /* UIColor+RSSReader.h */,
 				6114BE901C25B849001BDB66 /* UIColor+RSSReader.m */,
 				61AD3C631C1F6B630005FE3C /* Main.storyboard */,
@@ -283,7 +278,6 @@
 				61C4BCF71C244C1100EC2113 /* ChannelEntity+CoreDataProperties.m in Sources */,
 				6114BE8A1C259104001BDB66 /* NewsDetailController.m in Sources */,
 				61F9C6781C21B6EB003E0E3A /* MainViewController.m in Sources */,
-				6114BE8E1C25B65C001BDB66 /* AppConstants.m in Sources */,
 				61C4BCF51C244C1100EC2113 /* ItemEntity+CoreDataProperties.m in Sources */,
 				61AD3C681C1F6B630005FE3C /* RSSReader.xcdatamodeld in Sources */,
 				61C4BCF81C244C1100EC2113 /* ChannelEntity.m in Sources */,

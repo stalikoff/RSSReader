@@ -38,7 +38,7 @@
     self.navigationItem.title = self.detailItem.title;
 }
 
-#pragma mark TableView
+#pragma mark - TableView
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -62,7 +62,7 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (editingStyle == UITableViewCellEditingStyleDelete) {    // delete object from database
+    if (editingStyle == UITableViewCellEditingStyleDelete) {   
         NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
         [context deleteObject:[self.fetchedResultsController objectAtIndexPath:indexPath]];
         

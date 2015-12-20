@@ -14,6 +14,8 @@
 #import "NewsController.h"
 #import "ItemEntity.h"
 
+const float kUpdateInterval = 30.0;
+
 @interface MainViewController ()
 
 @end
@@ -30,7 +32,7 @@
     [channelsTable addSubview:refreshControl];
     [refreshControl addTarget:self action:@selector(refreshData) forControlEvents:UIControlEventValueChanged];
     
-    NSTimer *t = [NSTimer scheduledTimerWithTimeInterval: 30.0
+    [NSTimer scheduledTimerWithTimeInterval: kUpdateInterval
                                                   target: self
                                                 selector:@selector(updateAllNews)
                                                 userInfo: nil repeats:YES];
@@ -73,7 +75,6 @@
         return;
     }
     
-    
     [self getChannel:feedURLString andFromAdd:YES];
 }
 
@@ -95,19 +96,16 @@
     
     ChannelEntity *newChannel = [self getSavedChannelFromUrl:feedUrl];
     
-    if (newChannel) { // if is in db
+    if (newChannel) { // is in db
         if (newChannel.lastUpdateDate) {
             if ([newChannel.lastUpdateDate compare:channel.lastBuildDate] == NSOrderedSame) { // is update
-                // if no updates
-                NSLog(@"new date: %@  saved date: %@", newChannel.lastUpdateDate, channel.lastBuildDate);
                 return;
             }
         }
     
-        NSLog(@"new date: %@  saved date: %@", newChannel.lastUpdateDate, channel.lastBuildDate);
         newChannel.lastUpdateDate = channel.lastBuildDate;
     }
-    else{ // new
+    else{
         isNewChannel = YES;
         newChannel = [NSEntityDescription insertNewObjectForEntityForName:[entity name] inManagedObjectContext:context];
         newChannel.title = channel.title;
@@ -160,7 +158,7 @@
     }
 }
 
-#pragma mark TableView
+#pragma mark - TableView
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -190,7 +188,7 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
   
-    if (editingStyle == UITableViewCellEditingStyleDelete) {    // delete object from database
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
         NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
         [context deleteObject:[self.fetchedResultsController objectAtIndexPath:indexPath]];
         
@@ -305,7 +303,7 @@
     [channelsTable endUpdates];
 }
 
-#pragma mark Navigation
+#pragma mark - Navigation
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
@@ -320,7 +318,7 @@
     }
 }
 
-#pragma mark request 
+#pragma mark - request
 
 -(void)getChannel:(NSString*)url andFromAdd:(BOOL)isFromAdd
 {
@@ -374,7 +372,7 @@
     [self getChannel:url andFromAdd:NO];
 }
 
-#pragma mark database
+#pragma mark - database
 
 -(int)savedChannelsCnt
 {
@@ -433,6 +431,8 @@
         return nil;
     }
 }
+
+#pragma mark
 
 -(void)decreaseNotRefrChannels
 {
