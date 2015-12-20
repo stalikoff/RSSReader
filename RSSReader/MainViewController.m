@@ -14,7 +14,7 @@
 #import "NewsController.h"
 #import "ItemEntity.h"
 
-const float kUpdateInterval = 30.0;
+const float kUpdateInterval = 180.0;
 
 @interface MainViewController ()
 
