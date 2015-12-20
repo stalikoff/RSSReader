@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <CoreData/CoreData.h>
 #import "ChannelEntity.h"
-
+@class MainViewController;
 
 @interface FeedsViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, NSFetchedResultsControllerDelegate>
 {    
@@ -17,9 +17,11 @@
     UIRefreshControl *refreshControl;
 }
 
+@property (weak, nonatomic) MainViewController *mainControler;
 @property (strong, nonatomic) ChannelEntity *detailItem;
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
+-(void)endRefreshControl;
 
 @end

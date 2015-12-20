@@ -34,12 +34,12 @@
                                                   target: self
                                                 selector:@selector(updateAllNews)
                                                 userInfo: nil repeats:YES];
+    
+    [self updateAllNews];
 }
 
 - (IBAction)addChannelPress:(id)sender
 {
-//    NSString *feedURLString = @"http://feeds.feedburner.com/RayWenderlich";
-    
     NSString *feedURLString = feedUrlTF.text;
    
     if (feedUrlTF.text.length < 3) {
@@ -312,10 +312,11 @@
     if ([[segue identifier] isEqualToString:@"showFeedSegue"]) {
         NSIndexPath *indexPath = [channelsTable indexPathForSelectedRow];
         ChannelEntity *object = [[self fetchedResultsController] objectAtIndexPath:indexPath];
-        FeedsViewController *controller = (FeedsViewController *)segue.destinationViewController;
-        [controller setDetailItem:object];
-        controller.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
-        controller.navigationItem.leftItemsSupplementBackButton = YES;
+        newsConroller = (FeedsViewController *)segue.destinationViewController;
+        [newsConroller setDetailItem:object];
+        newsConroller.mainControler = self;
+        newsConroller.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
+        newsConroller.navigationItem.leftItemsSupplementBackButton = YES;
     }
 }
 
@@ -347,6 +348,12 @@
     for (ChannelEntity *channel in results) {
         [self getChannel:channel.url];
     }
+}
+
+-(void)refreshChannelFromParent:(NSString *)url
+{
+    notRefrChannelsCnt ++;
+    [self getChannel:url];
 }
 
 #pragma mark is in db
@@ -414,6 +421,11 @@
     if (notRefrChannelsCnt) {
         if (notRefrChannelsCnt == 1) {
             notRefrChannelsCnt = 0;
+            
+            if (newsConroller) {
+                [newsConroller endRefreshControl];
+            }
+            
             if (refreshControl.refreshing) {
                 [refreshControl endRefreshing];
             }

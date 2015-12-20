@@ -12,6 +12,7 @@
 #import "NewsItemCell.h"
 #import "NewsDetailController.h"
 #import "UIColor+RSSReader.h"
+#import "MainViewController.h"
 
 @interface FeedsViewController ()
 
@@ -220,7 +221,14 @@
 
 -(void)refreshData
 {
-    [refreshControl endRefreshing];
+    [self.mainControler refreshChannelFromParent:self.detailItem.url];
+}
+
+-(void)endRefreshControl
+{
+    if (refreshControl.refreshing) {
+        [refreshControl endRefreshing];
+    }
 }
 
 -(void)viewWillDisappear:(BOOL)animated
