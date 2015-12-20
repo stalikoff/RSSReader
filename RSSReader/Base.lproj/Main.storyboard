@@ -81,7 +81,7 @@
         <!--News-->
         <scene sceneID="Rmb-3T-myh">
             <objects>
-                <viewController id="mBY-V6-zvK" customClass="FeedsViewController" sceneMemberID="viewController">
+                <viewController id="mBY-V6-zvK" customClass="NewsController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="l9C-qv-nMk"/>
                         <viewControllerLayoutGuide type="bottom" id="mRt-M7-iRk"/>

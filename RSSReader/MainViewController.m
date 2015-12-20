@@ -11,7 +11,7 @@
 #import "MediaRSSModels.h"
 #import "ChannelEntity.h"
 #import "AppDelegate.h"
-#import "FeedsViewController.h"
+#import "NewsController.h"
 #import "ItemEntity.h"
 
 @interface MainViewController ()
@@ -312,7 +312,7 @@
     if ([[segue identifier] isEqualToString:@"showFeedSegue"]) {
         NSIndexPath *indexPath = [channelsTable indexPathForSelectedRow];
         ChannelEntity *object = [[self fetchedResultsController] objectAtIndexPath:indexPath];
-        newsConroller = (FeedsViewController *)segue.destinationViewController;
+        newsConroller = (NewsController *)segue.destinationViewController;
         [newsConroller setDetailItem:object];
         newsConroller.mainControler = self;
         newsConroller.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;

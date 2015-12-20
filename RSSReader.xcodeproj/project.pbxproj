@@ -23,7 +23,7 @@
 		61C4BCF81C244C1100EC2113 /* ChannelEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 61C4BCF41C244C1100EC2113 /* ChannelEntity.m */; };
 		61C4BCFB1C2457E000EC2113 /* NewsItemCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 61C4BCFA1C2457E000EC2113 /* NewsItemCell.m */; };
 		61F9C6781C21B6EB003E0E3A /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 61F9C6771C21B6EB003E0E3A /* MainViewController.m */; };
-		61F9C67B1C21B741003E0E3A /* FeedsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 61F9C67A1C21B741003E0E3A /* FeedsViewController.m */; };
+		61F9C67B1C21B741003E0E3A /* NewsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 61F9C67A1C21B741003E0E3A /* NewsController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -54,8 +54,8 @@
 		61C4BCFA1C2457E000EC2113 /* NewsItemCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewsItemCell.m; sourceTree = "<group>"; };
 		61F9C6761C21B6EB003E0E3A /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
 		61F9C6771C21B6EB003E0E3A /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
-		61F9C6791C21B741003E0E3A /* FeedsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeedsViewController.h; sourceTree = "<group>"; };
-		61F9C67A1C21B741003E0E3A /* FeedsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeedsViewController.m; sourceTree = "<group>"; };
+		61F9C6791C21B741003E0E3A /* NewsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewsController.h; sourceTree = "<group>"; };
+		61F9C67A1C21B741003E0E3A /* NewsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewsController.m; sourceTree = "<group>"; };
 		6EC2F69CD0DAE622F90710AC /* Pods-RSSReader.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RSSReader.debug.xcconfig"; path = "Pods/Target Support Files/Pods-RSSReader/Pods-RSSReader.debug.xcconfig"; sourceTree = "<group>"; };
 		A452FF65F92480A3D334F8C5 /* Pods-RSSReader.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RSSReader.release.xcconfig"; path = "Pods/Target Support Files/Pods-RSSReader/Pods-RSSReader.release.xcconfig"; sourceTree = "<group>"; };
 		BA66CA9897187A89DD3351EE /* libPods-RSSReader.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RSSReader.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -122,8 +122,8 @@
 				61AD3C5E1C1F6B630005FE3C /* AppDelegate.m */,
 				61F9C6761C21B6EB003E0E3A /* MainViewController.h */,
 				61F9C6771C21B6EB003E0E3A /* MainViewController.m */,
-				61F9C6791C21B741003E0E3A /* FeedsViewController.h */,
-				61F9C67A1C21B741003E0E3A /* FeedsViewController.m */,
+				61F9C6791C21B741003E0E3A /* NewsController.h */,
+				61F9C67A1C21B741003E0E3A /* NewsController.m */,
 				6114BE881C259104001BDB66 /* NewsDetailController.h */,
 				6114BE891C259104001BDB66 /* NewsDetailController.m */,
 				6114BE8C1C25B65C001BDB66 /* AppConstants.h */,
@@ -290,7 +290,7 @@
 				6114BE911C25B849001BDB66 /* UIColor+RSSReader.m in Sources */,
 				61C4BCFB1C2457E000EC2113 /* NewsItemCell.m in Sources */,
 				61C4BCF61C244C1100EC2113 /* ItemEntity.m in Sources */,
-				61F9C67B1C21B741003E0E3A /* FeedsViewController.m in Sources */,
+				61F9C67B1C21B741003E0E3A /* NewsController.m in Sources */,
 				61AD3C5F1C1F6B630005FE3C /* AppDelegate.m in Sources */,
 				61AD3C5C1C1F6B630005FE3C /* main.m in Sources */,
 			);

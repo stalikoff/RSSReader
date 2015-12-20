@@ -1,5 +1,5 @@
 //
-//  FeedsViewController.h
+//  NewsController.h
 //  RSSReader
 //
 //  Created by Oleg on 16.12.15.
@@ -11,7 +11,7 @@
 #import "ChannelEntity.h"
 @class MainViewController;
 
-@interface FeedsViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, NSFetchedResultsControllerDelegate>
+@interface NewsController : UIViewController <UITableViewDataSource, UITableViewDelegate, NSFetchedResultsControllerDelegate>
 {    
     __weak IBOutlet UITableView *newsTable;
     UIRefreshControl *refreshControl;

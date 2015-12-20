@@ -1,12 +1,12 @@
 //
-//  FeedsViewController.m
+//  NewsController.m
 //  RSSReader
 //
 //  Created by Oleg on 16.12.15.
 //  Copyright © 2015 Oleg. All rights reserved.
 //
 
-#import "FeedsViewController.h"
+#import "NewsController.h"
 #import "AppDelegate.h"
 #import "ItemEntity.h"
 #import "NewsItemCell.h"
@@ -14,11 +14,11 @@
 #import "UIColor+RSSReader.h"
 #import "MainViewController.h"
 
-@interface FeedsViewController ()
+@interface NewsController ()
 
 @end
 
-@implementation FeedsViewController
+@implementation NewsController
 
 - (void)viewDidLoad {
     [super viewDidLoad];

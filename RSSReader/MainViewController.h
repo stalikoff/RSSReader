@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <CoreData/CoreData.h>
 #import "MediaRSSParser.h"
-#import "FeedsViewController.h"
+#import "NewsController.h"
 
 @interface MainViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, NSFetchedResultsControllerDelegate>
 {
@@ -18,7 +18,7 @@
     __weak IBOutlet UITableView *channelsTable;
     UIRefreshControl *refreshControl;
     int notRefrChannelsCnt;
-    __weak FeedsViewController *newsConroller;
+    __weak NewsController *newsConroller;
 }
 
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
